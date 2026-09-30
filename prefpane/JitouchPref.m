@@ -147,6 +147,11 @@ static CGEventRef CGEventCallback(CGEventTapProxy proxy, CGEventType type, CGEve
 - (NSString *)generateJitouchLaunchAgent {
     NSString *pathToUs = [[self bundle] bundlePath];
     NSString *home = NSHomeDirectory();
+    NSString *installedProgram = @"/Applications/Jitouch.app/Contents/MacOS/Jitouch";
+    NSString *embeddedProgram = [pathToUs stringByAppendingPathComponent:@"Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch"];
+    NSString *program = [[NSFileManager defaultManager] isExecutableFileAtPath:installedProgram]
+        ? installedProgram
+        : embeddedProgram;
     NSString *launchAgentFmt = @"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
 "<plist version=\"1.0\">\n"
@@ -154,7 +159,7 @@ static CGEventRef CGEventCallback(CGEventTapProxy proxy, CGEventType type, CGEve
 "    <key>Label</key>\n"
 "    <string>com.jitouch.Jitouch.agent</string>\n"
 "    <key>Program</key>\n"
-"    <string>%@/Contents/Resources/Jitouch.app/Contents/MacOS/Jitouch</string>\n"
+"    <string>%@</string>\n"
 "    <key>RunAtLoad</key>\n"
 "    <true/>\n"
 "    <key>KeepAlive</key>\n"
@@ -169,7 +174,7 @@ static CGEventRef CGEventCallback(CGEventTapProxy proxy, CGEventType type, CGEve
 "    <integer>63</integer>\n"
 "</dict>\n"
 "</plist>";
-    NSString *launchAgent = [NSString stringWithFormat:launchAgentFmt, pathToUs, home];
+    NSString *launchAgent = [NSString stringWithFormat:launchAgentFmt, program, home];
     return launchAgent;
 }
 
