@@ -1,0 +1,93 @@
+name: Bug report
+description: Report a reproducible gesture, build, installation, or compatibility problem.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve this source-only fork. Do not include passwords or private information in logs.
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      placeholder: "For example: macOS 15.6"
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Mac and pointing device
+      placeholder: "For example: M2 MacBook Air built-in trackpad"
+    validations:
+      required: true
+  - type: input
+    id: xcode
+    attributes:
+      label: Xcode version
+      placeholder: "Output of: xcodebuild -version"
+    validations:
+      required: true
+  - type: input
+    id: firefox
+    attributes:
+      label: Firefox version
+      placeholder: "Use N/A if the problem is unrelated to Firefox"
+    validations:
+      required: true
+  - type: dropdown
+    id: installation
+    attributes:
+      label: Installation path
+      options:
+        - Fresh installation
+        - Upgrade of an existing installation
+        - Build only
+        - Manual/custom installation
+    validations:
+      required: true
+  - type: textarea
+    id: gesture
+    attributes:
+      label: Gesture configuration
+      description: Describe the gesture, target application, and configured action.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Configure...
+        2. Open...
+        3. Perform...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste a short, sanitized excerpt from ~/Library/Logs/com.jitouch.Jitouch.log.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I built the current source and granted Accessibility permission to /Applications/Jitouch.app.
+          required: true
+        - label: I removed private information from logs and screenshots.
+          required: true

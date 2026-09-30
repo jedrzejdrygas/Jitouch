@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Upstream Jitouch issues
+    url: https://github.com/JitouchApp/Jitouch/issues
+    about: Check whether an issue affects unmodified upstream Jitouch as well.

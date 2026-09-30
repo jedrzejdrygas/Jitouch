@@ -1,35 +1,117 @@
-# Jitouch
+# Jitouch — Firefox horizontal swipe fork
 
-**Jitouch** is a Mac application that expands the set of multi-touch gestures for MacBook, Magic Mouse, and Magic Trackpad. These thoughtfully designed gestures enable users to perform frequent tasks more easily such as changing tabs in web browsers, closing windows, minimizing windows, changing spaces, and a lot more.
+This source-only fork of [Jitouch](https://github.com/JitouchApp/Jitouch) allows
+configured three-finger horizontal trackpad swipes to run in Firefox. Upstream
+Jitouch excludes both Safari and Firefox from those gestures; this fork retains
+Safari's special handling but lets Jitouch dispatch the user's configured action
+in Firefox.
 
-For more details, see https://www.jitouch.com/.
+The change addresses the behavior reported in
+[JitouchApp/Jitouch#45](https://github.com/JitouchApp/Jitouch/issues/45).
 
-## Installation
+No application bundle, installer package, or other binary release is distributed
+by this repository. Users build the application locally from source.
 
-Download `Install-Jitouch.pkg` from the [releases](https://github.com/aaronkollasch/jitouch/releases/latest) page.
-Double-click and follow the instructions to install.
+## Requirements
 
-## Troubleshooting
+- macOS 12 or newer.
+- Full Xcode, selected with `xcode-select`.
+- Xcode's license and first-launch component installation completed.
+- Administrator access only when installing into `/Applications` and
+  `/Library/PreferencePanes`.
 
-When opening the Jitouch preference pane for the first time, you may see an error message such as "Could not load Jitouch preference pane". If so, restarting your computer should fix this.
+If Xcode command-line tools still point at the standalone tools, run:
 
-After opening the Jitouch preference pane in System Preferences, a prompt should appear to give Jitouch accessibility permissions. If the prompt doesn't appear, try switching Jitouch off and on in the Jitouch preference pane. Otherwise, you will need to manually give Jitouch permissions.
+```sh
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -license accept
+sudo xcodebuild -runFirstLaunch
+```
 
-#### To manually give Jitouch permissions:
-- Go to the folder `/Library/PreferencePanes/Jitouch.prefPane/Contents/Resources/` in Finder. If you installed Jitouch for your user only, replace `/Library` with `~/Library`. This folder should contain an application named Jitouch.app.
-- Open System Preferences and go to "Security & Privacy -> Privacy -> Accessibility", which is a list labeled "Allow these apps to control your computer".
-- Click the lock to make changes, then drag Jitouch.app from Finder into that list.
-- Force restart Jitouch with `killall Jitouch` in the Terminal.
+## Build from source
 
-## How to build from source
+Building never modifies an existing Jitouch installation:
 
-1. Open jitouch/Jitouch/Jitouch.xcodeproj in Xcode and build the project. This will create Jitouch.app in the prefpane folder. For the highest performance, set the Build Configuration to Release.
-2. Open prefpane/Jitouch.xcodeproj in Xcode and build the project. This will create Jitouch.prefPane.
-3. Double-click Jitouch.prefPane to install Jitouch.
+```sh
+./scripts/build.sh
+```
 
-## License
+Products are written to:
 
-Copyright (c) Supasorn Suwajanakorn and Sukolsak Sakshuwong. All rights reserved.  
-Modified work copyright (c) Aaron Kollasch. All rights reserved.
+```text
+build/app/Release/Jitouch.app
+build/prefpane/Release/Jitouch.prefPane
+```
 
-Licensed under the [GNU General Public License v3.0](LICENSE).
+Use `./scripts/build.sh --no-clean` for an incremental build. Set
+`MACOSX_DEPLOYMENT_TARGET` to override the default target of macOS 12.0.
+
+## Install the local build
+
+```sh
+./scripts/install.sh
+```
+
+The installer builds and verifies both products before changing the installed
+copy. It then chooses one of two paths:
+
+- **Existing installation:** exports and checksums the complete Jitouch
+  preference domain, retains the original plist and launch agent, installs the
+  replacement, and restores all gestures and preferences.
+- **Fresh installation:** skips backup and restoration and installs cleanly.
+
+Useful options:
+
+```text
+--build-only              Build and verify without installing
+--dry-run                 Report the detected path and planned actions
+--skip-build              Install products already present under build/
+--no-accessibility-reset  Preserve the current Accessibility database entry
+```
+
+Run `./scripts/install.sh --help` for the complete usage text.
+
+## Accessibility permission
+
+Local builds are ad-hoc signed. A rebuild can therefore have a different signing
+identity from the previously authorized binary. By default, the installer resets
+only Jitouch's stale Accessibility record after replacing the app.
+
+After installation, enable `/Applications/Jitouch.app` under:
+
+**System Settings → Privacy & Security → Accessibility**
+
+If gestures still do not respond, remove any old Jitouch entry, add the app from
+`/Applications`, and restart it:
+
+```sh
+launchctl kickstart -k "gui/$(id -u)/com.jitouch.Jitouch.agent"
+```
+
+Runtime diagnostics are written to:
+
+```text
+~/Library/Logs/com.jitouch.Jitouch.log
+```
+
+## Compatibility notes
+
+- This fork changes horizontal three-finger trackpad swipes in Firefox only.
+- Safari retains upstream behavior because it handles the gesture itself.
+- The project uses Apple's private `MultitouchSupport` framework and deprecated
+  preference-pane APIs. Future macOS or Xcode releases may require source changes.
+- Builds include the architectures selected by the Xcode project. The build
+  script verifies the resulting bundles but does not notarize them.
+- The settings preference pane remains available for gesture configuration, while
+  the runtime application is installed as `/Applications/Jitouch.app`.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development, verification, and issue
+reporting guidance.
+
+## License and attribution
+
+Jitouch is licensed under the [GNU General Public License v3.0](LICENSE). Original
+copyright notices remain intact. See [NOTICE.md](NOTICE.md) and
+[CHANGELOG.md](CHANGELOG.md) for this fork's modifications.
