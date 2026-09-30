@@ -3,7 +3,7 @@
 All notable fork-specific changes are documented here. Upstream Jitouch history
 remains available in the repository's Git history.
 
-## Unreleased
+## [2.82.1-firefox.1] - 2026-09-30
 
 ### Changed
 
@@ -25,3 +25,5 @@ remains available in the repository's Git history.
 ### Distribution
 
 - Source code only; no application or installer binaries are published.
+
+[2.82.1-firefox.1]: https://github.com/jedrzejdrygas/Jitouch/compare/v2.82.1...v2.82.1-firefox.1
