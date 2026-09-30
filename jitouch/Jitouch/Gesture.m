@@ -1704,7 +1704,9 @@ static void gestureTrackpadSwipeThreeFingers(const Finger *data, int nFingers) {
                 // that is, is it able to receive multi-touch events?
                 CFTypeRef axui = axuiUnderMouse();
                 NSString *application = nameOfAxui(axui);
-                if (![application isEqualToString:@"Safari"] && ![application isEqualToString:@"Firefox"]) {
+                // Unlike Safari, Firefox does not reliably consume this gesture itself.
+                // Allow Jitouch to dispatch the user's configured horizontal swipe.
+                if (![application isEqualToString:@"Safari"]) {
                     dispatchCommand(@"Three-Swipe-Left", TRACKPAD);
                     for (int i = 0; i < nFingers; i++) {
                         startx[i] = data[i].px;
@@ -1717,7 +1719,9 @@ static void gestureTrackpadSwipeThreeFingers(const Finger *data, int nFingers) {
                 type = 4;
                 CFTypeRef axui = axuiUnderMouse();
                 NSString *application = nameOfAxui(axui);
-                if (![application isEqualToString:@"Safari"] && ![application isEqualToString:@"Firefox"]) {
+                // Unlike Safari, Firefox does not reliably consume this gesture itself.
+                // Allow Jitouch to dispatch the user's configured horizontal swipe.
+                if (![application isEqualToString:@"Safari"]) {
                     dispatchCommand(@"Three-Swipe-Right", TRACKPAD);
                     for (int i = 0; i < nFingers; i++) {
                         startx[i] = data[i].px;
